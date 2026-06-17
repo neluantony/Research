@@ -1,4 +1,4 @@
-Urban Imageability and Geographic Knowledge in Vision-Language Models
+# Urban Imageability and Geographic Knowledge in Vision-Language Models
 
 Large Vision-Language Models (VLMs) are increasingly capable of interpreting visual information and reasoning about places, yet little is known about how they internally represent cities and urban environments. While humans develop mental maps of places through experience, forming cognitive representations of landmarks, districts, paths, and neighbourhoods, it remains unclear whether modern AI systems develop analogous forms of geographic knowledge.
 
