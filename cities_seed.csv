@@ -1,0 +1,51 @@
+city_id,city_name,country,region,population_tier,prominence_tier,design_role,sv_coverage_status,entity_qid,notes
+new_york,New York,United States,North America,mega,iconic,anchor_iconic,ok,,"Skyline and grid; high-distinctiveness / high-visibility anchor"
+los_angeles,Los Angeles,United States,North America,mega,iconic,secondary_iconic,ok,,"Distinctive sprawl, palm-lined arterials"
+chicago,Chicago,United States,North America,mega,iconic,secondary_iconic,ok,,"Distinctive architecture"
+toronto,Toronto,Canada,North America,mega,medium,secondary_medium,ok,,
+houston,Houston,United States,North America,mega,ordinary,off_diagonal_famous_generic,ok,,"Off-diagonal: high cultural visibility (US), generic Sunbelt fabric"
+phoenix,Phoenix,United States,North America,large,ordinary,ordinary_baseline,ok,,"Generic grid"
+mexico_city,Mexico City,Mexico,Latin America & Caribbean,mega,iconic,anchor_iconic,ok,,
+rio_de_janeiro,Rio de Janeiro,Brazil,Latin America & Caribbean,mega,iconic,anchor_iconic,ok,,"Extreme topography -> very high imageability"
+buenos_aires,Buenos Aires,Argentina,Latin America & Caribbean,mega,iconic,secondary_iconic,ok,,"European-style fabric"
+sao_paulo,Sao Paulo,Brazil,Latin America & Caribbean,mega,ordinary,off_diagonal_famous_generic,ok,,"Off-diagonal: huge and well-known, visually generic high-rise sprawl"
+lima,Lima,Peru,Latin America & Caribbean,mega,medium,secondary_medium,ok,,
+medellin,Medellin,Colombia,Latin America & Caribbean,large,medium,off_diagonal_distinctive_lesser_known,ok,,"Off-diagonal: distinctive valley form, moderate global fame"
+valparaiso,Valparaiso,Chile,Latin America & Caribbean,large,medium,wildcard_distinctive_low_visibility,ok,,"WILDCARD high-distinctiveness/low-visibility: hillside amphitheatre, funiculars, painted houses. Gran Valparaiso conurbation ~1M, at the population threshold"
+paris,Paris,France,Europe,mega,iconic,anchor_iconic,ok,,
+london,London,United Kingdom,Europe,mega,iconic,anchor_iconic,ok,,
+rome,Rome,Italy,Europe,large,iconic,secondary_iconic,ok,,
+berlin,Berlin,Germany,Europe,mega,iconic,secondary_iconic,ok_recent,,"Coverage refreshed 2022-2023 after a 12-year gap; imagery vintage differs from other cities, note in analysis"
+warsaw,Warsaw,Poland,Europe,large,ordinary,ordinary_baseline,ok,,"Eastern-Europe balance within the region"
+lyon,Lyon,France,Europe,large,ordinary,ordinary_baseline,ok,,"Mid-size, lower global profile"
+istanbul,Istanbul,Turkey,MENA & North Africa,mega,iconic,anchor_iconic,ok,,"Distinctive, transcontinental"
+tunis,Tunis,Tunisia,MENA & North Africa,large,medium,secondary_medium,ok,Q3572,"Substituted for cairo (Egypt ~1% official Street View; Alexandria also ~0%). Frame coverage 14% official (low but usable: oversample more; coverage is the conf_sv_coverage confound). QID pinned (Q3572): resolver defers to country Tunisia Q948."
+dubai,Dubai,United Arab Emirates,MENA & North Africa,large,iconic,secondary_iconic,ok,,"Extreme distinctive skyline + very high cultural visibility"
+muscat,Muscat,Oman,MENA & North Africa,large,ordinary,ordinary_baseline,ok,,"Substituted for casablanca (Morocco 0% official Street View). Gulf & N.Africa largely uncovered: Saudi (Riyadh/Jeddah), Kuwait, Bahrain, Iraq, Egypt all ~0% official (probe 2026-07). Muscat 23% official coverage (probe N=30, r=7km) - usable via oversampling like Tunis. Coverage is the conf_sv_coverage confound. Keeps casablanca's ordinary_baseline role in the MENA cell."
+amman,Amman,Jordan,MENA & North Africa,large,ordinary,ordinary_baseline,ok,,
+doha,Doha,Qatar,MENA & North Africa,large,medium,off_diagonal_distinctive_lesser_known,ok,,"Off-diagonal: distinctive modern skyline, moderate fame"
+cape_town,Cape Town,South Africa,Sub-Saharan Africa,large,medium,off_diagonal_distinctive_lesser_known,ok,,"Off-diagonal: Table Mountain, extreme physical distinctiveness, moderate global fame"
+johannesburg,Johannesburg,South Africa,Sub-Saharan Africa,mega,medium,ordinary_baseline,ok,,"Generic sprawl"
+nairobi,Nairobi,Kenya,Sub-Saharan Africa,large,medium,secondary_medium,ok,,"Coverage actively updating 2024-2025"
+lagos,Lagos,Nigeria,Sub-Saharan Africa,mega,medium,off_diagonal_famous_generic,ok,,"Off-diagonal: very large, low global visual distinctiveness"
+accra,Accra,Ghana,Sub-Saharan Africa,large,ordinary,ordinary_baseline,ok,,"Coverage confirmed: 56% official via Street View metadata check (2026-06)."
+dakar,Dakar,Senegal,Sub-Saharan Africa,large,ordinary,ordinary_baseline,ok,,"Coastal"
+mumbai,Mumbai,India,South Asia,mega,iconic,anchor_iconic,ok,,
+delhi,Delhi,India,South Asia,mega,iconic,secondary_iconic,ok,,
+kolkata,Kolkata,India,South Asia,mega,medium,off_diagonal_distinctive_lesser_known,ok,,"Distinctive colonial fabric"
+bengaluru,Bengaluru,India,South Asia,mega,ordinary,off_diagonal_famous_generic,ok,,"Off-diagonal: well-known, generic modern fabric"
+dhaka,Dhaka,Bangladesh,South Asia,mega,medium,secondary_medium,ok,,"Dense; lower global fame"
+colombo,Colombo,Sri Lanka,South Asia,large,ordinary,ordinary_baseline,ok,,
+ahmedabad,Ahmedabad,India,South Asia,mega,ordinary,wildcard_distinctive_low_visibility,ok,,"WILDCARD high-distinctiveness/low-visibility: UNESCO walled old city (pols), distinctive historic fabric, very low global media visibility despite megacity scale"
+tokyo,Tokyo,Japan,East & Southeast Asia,mega,iconic,anchor_iconic,ok,,
+seoul,Seoul,South Korea,East & Southeast Asia,mega,iconic,secondary_iconic,ok_dated,,"Coverage dates from 2012 (Seoul, Busan) and has not been refreshed/expanded; treat imagery vintage as a covariate"
+singapore,Singapore,Singapore,East & Southeast Asia,large,iconic,secondary_iconic,ok,,"Distinctive, high visibility"
+bangkok,Bangkok,Thailand,East & Southeast Asia,mega,iconic,secondary_iconic,ok,,
+jakarta,Jakarta,Indonesia,East & Southeast Asia,mega,ordinary,off_diagonal_famous_generic,ok,,"Off-diagonal: very large, generic sprawl"
+kuala_lumpur,Kuala Lumpur,Malaysia,East & Southeast Asia,large,medium,off_diagonal_distinctive_lesser_known,ok,,"Off-diagonal: Petronas landmark, moderate fame"
+sydney,Sydney,Australia,Oceania,mega,iconic,anchor_iconic,ok,,"Opera House"
+melbourne,Melbourne,Australia,Oceania,mega,medium,secondary_medium,ok,,"Distinctive laneways"
+brisbane,Brisbane,Australia,Oceania,large,ordinary,ordinary_baseline,ok,,
+perth,Perth,Australia,Oceania,large,ordinary,ordinary_baseline,ok,,"Isolated, generic"
+adelaide,Adelaide,Australia,Oceania,large,ordinary,ordinary_baseline,ok,,
+auckland,Auckland,New Zealand,Oceania,large,medium,secondary_medium,ok,,

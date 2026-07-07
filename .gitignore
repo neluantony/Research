@@ -1,0 +1,22 @@
+# --- large data: never pushed (17+ GB of extracts, rasters, imagery) --------
+data/
+GHS_UCDB_GLOBE_R2024A_V1_2/
+*.zip
+*.pbf
+*.tif
+*.gpkg
+*.exe
+
+# Street View imagery must stay local: the research permission covers storage
+# for this project, NOT redistribution on a public repository.
+
+# --- local environment -------------------------------------------------------
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# --- generated documents --------------------------------------------------
+*.pdf
+
+docs/

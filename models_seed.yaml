@@ -1,0 +1,72 @@
+# Models under test (codebook: open-weight Qwen-VL / LLaVA / InternVL +
+# proprietary GPT / Gemini / Claude). Synced to the `models` table by
+# `python -m inference register`.
+#
+# exact_version_string must be the real, pinned API identifier — never
+# guessed. Entries with an empty exact_version_string are skipped by the
+# registry with a warning until the current identifier is checked against
+# the provider's documentation and filled in.
+#
+# training_window_start/end: fill from provider documentation when known
+# (needed for the temporal alignment of cultural-visibility proxies —
+# codebook normalisation.temporal_alignment). Leave null if unpublished.
+
+models:
+  # --- proprietary: Anthropic (IDs verified against Anthropic docs 2026-07) --
+  - name: claude-opus-4-8
+    exact_version_string: claude-opus-4-8
+    family: claude
+    open_weight: false
+    access: api
+    training_window_start: null
+    training_window_end: null
+
+  - name: claude-sonnet-5
+    exact_version_string: claude-sonnet-5
+    family: claude
+    open_weight: false
+    access: api
+    training_window_start: null
+    training_window_end: null
+
+  - name: claude-haiku-4-5
+    exact_version_string: claude-haiku-4-5-20251001
+    family: claude
+    open_weight: false
+    access: api
+    training_window_start: null
+    training_window_end: null
+
+  # --- proprietary: OpenAI / Google — PIN BEFORE RUN --------------------------
+  # Verify the current vision-capable model identifiers from the providers'
+  # own documentation and fill them in; the registry refuses empty strings.
+  - name: gpt (PIN exact id)
+    exact_version_string: ""
+    family: gpt
+    open_weight: false
+    access: api
+
+  - name: gemini (PIN exact id)
+    exact_version_string: ""
+    family: gemini
+    open_weight: false
+    access: api
+
+  # --- open-weight (run locally; pin the exact HF repo + revision) -----------
+  - name: qwen-vl (PIN exact id)
+    exact_version_string: ""
+    family: qwen
+    open_weight: true
+    access: local
+
+  - name: llava (PIN exact id)
+    exact_version_string: ""
+    family: llava
+    open_weight: true
+    access: local
+
+  - name: internvl (PIN exact id)
+    exact_version_string: ""
+    family: internvl
+    open_weight: true
+    access: local

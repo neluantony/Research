@@ -1,0 +1,546 @@
+# =============================================================================
+# CODEBOOK — Urban Imageability & Geographic Knowledge in Vision-Language Models
+# =============================================================================
+# Single source of truth for the operational definitions of the two constructs
+# (physical imageability and cultural visibility) plus confounds, keys, capture
+# and normalisation rules. Designed to be read by humans AND by the ingestion
+# pipeline (which can enumerate `variables[*].id` to know what to compute).
+#
+# Version control: this file is the canonical spec. The DB schema and the
+# ingestion code are DERIVED from it; change definitions here first, then code.
+# =============================================================================
+
+project:
+  name: "Urban Imageability and Geographic Knowledge in Vision-Language Models"
+  institution: "Middlesex University London"
+  codebook_version: "0.3.1"
+  date: "2026-06-22"
+  status: "draft — SAMPLING PHASE COMPLETE (v0.3.5): stage A 9,842 points / 50 cities (innerness = mean(centrality, GHS-BUILT-S density), rejection stats persisted); neighbourhood boundaries 48/50 cities / 2,167 units; stage B 7,724 points / 48 cities, 545 eligible neighbourhoods (>=20 images each, 12 seeded-random selected per city); total 17,566 snap-verified points. Image source DECIDED (v0.3.6): Google Street View, institutional permission via supervisor (no bulk fetch until confirmed in writing); Mapillary rejected on coverage evidence, kept as robustness subset. Presentation scheme DECIDED (v0.3.7): 4 cardinal views per pano in one multi-image prompt; TEXT BLURRING added (v0.3.8): blurred stimuli by default + unblurred ablation on 1,000 points; detector output = text_cue_present. History: cairo→Tunis (v0.3.1), casablanca→Muscat (v0.3.2), stage-A full-spec re-run (v0.3.3), stage-B cap (v0.3.4). NO OPEN DECISIONS"
+  summary: >
+    Operationalises the two latent forces hypothesised to drive urban
+    recognisability in VLMs: the physical distinctiveness of the scene
+    (imageability, after Lynch) and the prominence of the place in collective
+    and digital memory (cultural visibility, a proxy for presence in the
+    model's training corpus). The two are measured separately so their
+    main effects AND their interaction can be tested.
+
+# -----------------------------------------------------------------------------
+# CROSS-CUTTING DESIGN PRINCIPLES
+# Decisions that constrain every variable below. Violating any of these
+# collapses the separation between the two constructs.
+# -----------------------------------------------------------------------------
+design_principles:
+  physical_salience_not_fame: >
+    Imageability counts/weights landmarks by PHYSICAL attributes only
+    (height, footprint, type) and is blind to fame. Fame (sitelinks,
+    pageviews) lives entirely in cultural_visibility. The same object can
+    enter both constructs via different properties (e.g. Eiffel Tower:
+    height -> lmk_immediate; celebrity -> lmk_fame).
+  global_vs_local: >
+    Cultural visibility is decomposed into global vs local prominence rather
+    than aggregated. The gap between them is itself a predictor and is the
+    suspected mechanism behind any regional recognition bias.
+  encoder_non_circularity: >
+    Any image-based distinctiveness measure must use a frozen, general,
+    self-supervised encoder (e.g. DINO) that is DIFFERENT from the VLMs under
+    test. Never measure distinctiveness with a model whose recognition you
+    then evaluate.
+  text_cue_isolated: >
+    Readable geo-informative text (OCR cue: shop signs, plates, driving side)
+    is recorded as a SEPARATE variable and never folded into imageability.
+    Reading a sign is OCR, not Lynchian cognition.
+  proxy_not_observable: >
+    Cultural-visibility proxies approximate an unobservable latent (presence
+    in training data). For closed-weight models this is necessarily indirect;
+    state as an explicit limitation.
+
+# -----------------------------------------------------------------------------
+# CAPTURE — how imagery is acquired and presented
+# -----------------------------------------------------------------------------
+capture:
+  # v0.3.7: the Street View Static API serves rectilinear views directly
+  # (heading/pitch/fov), so capture and presentation collapse into one step:
+  # N views per panorama ARE both the archive format and the model input.
+  # The original plan (archive raw equirectangular, reproject locally) is
+  # superseded — Google performs the reprojection server-side.
+  archive_format: "4 rectilinear cardinal views per panorama (N/E/S/W, fov 90, 640x640)"
+  rationale: >
+    Four fov-90 cardinal views tile the full 360 horizontally, so imageability
+    stays independent of camera framing (radius-based structural counts remain
+    coherent) without feeding models out-of-distribution equirectangular input.
+  presentation_to_model: "all 4 cardinal views in a single multi-image prompt (one response per point), TEXT-BLURRED variant"
+  presentation_note: >
+    RESOLVED (v0.3.7; amended v0.3.8). Single-view and per-view-scored
+    variants remain available as ablations on subsets. The zenith is not
+    captured by the 4 cardinal views: if/when the img_skyview_green measure
+    is computed, add one upward (pitch 90) capture-only view per point — a
+    cheap, additive increment that requires no re-fetch of the cardinal views.
+  text_blurring:   # v0.3.8 — supervisor requirement
+    rule: >
+      All model-facing stimuli are TEXT-BLURRED copies of the archived views:
+      scene-text regions detected automatically (CRAFT-class detector,
+      script-agnostic) and Gaussian-blurred. Rationale: readable signage lets
+      a model geolocate by OCR rather than by physical form; blurring removes
+      that channel at the stimulus level instead of only controlling for it
+      statistically. Originals stay archived untouched (blurring is
+      presentation, not capture) under presentation_scheme
+      cardinal4_fov90_640_v1; blurred copies are registered as
+      cardinal4_blurred_v1 and are the DEFAULT inference stimuli.
+    ablation: >
+      UNBLURRED ablation: the same models re-run on the ORIGINAL views for a
+      seeded-random subset of 20 stage-A points per city (1,000 points), to
+      quantify how much recognition relies on readable text. The
+      blurred-vs-unblurred accuracy gap is itself an RQ3 result.
+    text_cue_present: >
+      The detector output doubles as the measurement of the text_cue_present
+      confound: per point, the count of detected text boxes across the 4
+      views (0 = none), written to measurements (pipeline_version blur_v1).
+    limitation: >
+      Detector recall < 100% (small/angled/degraded text can survive);
+      validate on a manually inspected sample and report residual-text rate.
+  resolved_checks:  # were open_checks; all verified (see resolved_decisions)
+    - "storage/ToS: verified — imagery may not be stored/cached without permission (pano_id exempt); institutional permission via supervisor; UK s.29A TDM backstop"
+    - "request count per point: 4 static requests (~70k total for 17,566 points; ~£5.25/1,000 — billed in USD — partly coverable by the monthly free tier)"
+    - "4 views capture more signage than 1 -> OCR confound grows with view count; text_cue_present is measured on the same 4-view set the models see"
+
+# -----------------------------------------------------------------------------
+# SPATIAL FRAME — what counts as "the city" to sample from
+# Administrative boundaries are NOT comparable across countries, so a uniform
+# morphological/functional extent is used for all 50 cities.
+# -----------------------------------------------------------------------------
+spatial_frame:
+  definition: "GHSL Urban Centre / built-up extent (JRC, Degree of Urbanisation)"
+  rationale: >
+    Same density-based rule applied worldwide, so 'the city' means the same
+    thing in Tokyo and Adelaide — continuous built-up fabric above a density
+    threshold, not an arbitrary political boundary.
+  not_used: "administrative city limits (Toronto amalgam vs Paris intra-muros etc.)"
+
+# -----------------------------------------------------------------------------
+# SAMPLING — how points are drawn within each city
+# Stratified random, FIXED N per city, equal allocation across fabric strata.
+# Two-stage design so both the city task and the neighbourhood task have
+# adequate N without inflating the whole dataset.
+# -----------------------------------------------------------------------------
+sampling:
+  scheme: "stratified_random"
+  fixed_seed: true                 # reproducibility
+  store_frame_and_coords: true     # archive frame + all coords/metadata for re-runs
+  fabric_strata:
+    allocation: "equal"            # identical fabric mix in every city
+    classes:
+      - "historic_iconic_core"
+      - "dense_residential"
+      - "commercial_business"
+      - "low_density_suburban_residential"
+      - "peripheral_edge"
+    derivation_summary: "centrality gradient (distance-to-centroid / built density) x OSM land use"
+    # ----- operational derivation (v0.3.0) -----------------------------------
+    # Each candidate point is classified into exactly one of the 5 classes by
+    # crossing TWO axes: a position/density axis (core <-> edge) and a land-use
+    # FUNCTION axis (residential vs commercial vs heritage), both computed in a
+    # radius around the point. Thresholds are within-CITY relative (quantiles)
+    # for cross-city comparability, since "dense" in Tokyo != "dense" in Adelaide.
+    derivation:
+      data_sources:
+        osm_landuse: "OSM landuse/amenity/office/historic/tourism polygons + POIs"
+        built_density: "GHS-BUILT-S R2023A built-up surface fraction (raster), per point"
+        centrality: "geodesic distance from point to the GHSL frame centroid"
+      analysis_radius_m: 150          # neighbourhood window for land-use dominance
+      axes:
+        position_density:
+          # combined into a single 0..1 'innerness' score per point:
+          centrality_norm: "1 - (dist_to_centroid / city_max_dist_to_centroid)"
+          density_norm: "within-city quantile rank of built-up surface fraction"
+          innerness: "mean(centrality_norm, density_norm)"   # 1 = core, 0 = edge
+          zones:                       # within-city tertiles of innerness
+            core: "innerness in top tertile"
+            mid: "innerness in middle tertile"
+            edge: "innerness in bottom tertile"
+        land_use_function:
+          # dominant function among OSM features within analysis_radius_m
+          commercial: ["landuse=commercial", "landuse=retail", "office=*", "shop density high"]
+          residential: ["landuse=residential", "building=residential/apartments"]
+          heritage: ["historic=*", "tourism=attraction/museum", "heritage=*",
+                     "inside a designated old-town / conservation polygon"]
+          industrial_other: ["landuse=industrial", "no dominant tag"]
+      classification_rule:             # FIRST matching rule wins (priority order)
+        - "heritage signal AND zone in {core, mid}        -> historic_iconic_core"
+        - "function = commercial                          -> commercial_business"
+        - "function = residential AND zone in {core, mid} -> dense_residential"
+        - "function = residential AND zone = edge         -> low_density_suburban_residential"
+        - "else (industrial_other / low density / edge)   -> peripheral_edge"
+      allocation_method: >
+        Oversample uniform candidate points in the frame (sampling.py engine),
+        classify each, and fill a quota of n_per_city/5 per stratum. If a city
+        genuinely lacks enough of a stratum (e.g. no historic core), record the
+        shortfall rather than forcing it, and note the imbalance for that city.
+      thresholds_status: "DEFAULTS — tunable; calibrate on a pilot set of cities before the full run"
+      comparability_note: >
+        Density/centrality cutoffs are within-city quantiles so every city yields
+        a usable spread across strata; land-use FUNCTION is from absolute OSM tags.
+  stage_A:
+    purpose: "city-recognition task + all morphological covariates"
+    n_per_city: 200                # ~10,000 images total; primary cost/power lever
+    note: >
+      Fixed N per city means very different sampling DENSITY (200 points are
+      sparse in Tokyo, dense in Adelaide). Intended: equal representation PER
+      CITY (the unit of the research question), not per km^2.
+  stage_B:
+    purpose: "neighbourhood-recognition task"
+    min_images_per_neighbourhood: 20   # 15-20 floor
+    neighbourhoods_per_city: 12        # v0.3.4 budget cap — see method
+    selection: "seeded uniform random among the city's loaded neighbourhoods"
+    method: >
+      Select 12 neighbourhoods per city by seeded uniform random draw (cap
+      added v0.3.4: uncapped top-up of all ~2,167 loaded neighbourhoods would
+      cost ~35k images, 3.5x stage A, multiplied again at inference per model;
+      random selection keeps the tested set unbiased and the task size
+      comparable across cities). Reuse stage-A points that fall inside the
+      selected neighbourhoods, then top up with targeted points (sampled in
+      neighbourhood-intersect-frame, same snap/dedupe/quality rules) until the
+      20-image floor is met. Selected neighbourhoods that cannot reach the
+      floor are excluded from the neighbourhood task but their points remain
+      in the city task. Non-selected neighbourhoods are not topped up; their
+      organic stage-A points remain available for robustness checks.
+  street_view_rules:
+    snap_radius_m: 50              # nearest official panorama; else resample within same stratum
+    on_snap_failure: "resample_within_stratum"
+    log: ["snap_distance_m", "rejection_rate", "pano_id", "capture_date"]
+    rejection_rate_is_confound: true   # ties to conf_sv_coverage
+    deduplicate_by: "pano_id"          # collapse/resample points snapping to same panorama
+    quality_filter: "official outdoor road panoramas only; exclude indoor and user contributions"
+
+# -----------------------------------------------------------------------------
+# NEIGHBOURHOOD — boundary definition for the neighbourhood task
+# 'Neighbourhood' varies hugely (official districts vs vernacular areas); aim
+# for comparable granularity with a coherent, documented source + fallback.
+# -----------------------------------------------------------------------------
+neighbourhood:
+  target_granularity_units_per_city: [15, 40]
+  source_priority:
+    - "official open-data city boundaries (where clean)"
+    - "OSM administrative / suburb polygons (fallback)"
+  per_city_field: "neighbourhood_source"   # record which source was used
+  comparability_note: >
+    The neighbourhood task is intrinsically less comparable across cities than
+    the city task; state this as an explicit limitation rather than hiding it.
+
+# -----------------------------------------------------------------------------
+# NORMALISATION & AGGREGATION
+# -----------------------------------------------------------------------------
+normalisation:
+  city_level_default: "zscore_within_region"
+  neighbourhood_level: "zscore_within_city"
+  rationale: >
+    Within-stratum z-scoring prevents the absolute level of one continent (or
+    one city) from swamping the others, which matters directly for the
+    regional-bias research question.
+  temporal_alignment:
+    applies_to: ["all time-varying cultural-visibility proxies"]
+    rule: >
+      Snapshot proxies in the TRAINING WINDOW of each model under test, not at
+      query time. Wikipedia pageviews are dated and support this.
+
+# -----------------------------------------------------------------------------
+# CONSTRUCT 1 — IMAGEABILITY (physical distinctiveness, after Lynch)
+# Composite: sub-components reported individually AND combined, with composite
+# weights LEARNED from human distinctiveness ratings (not hand-set).
+# Computed at point level, aggregated to neighbourhood / city per task.
+# -----------------------------------------------------------------------------
+imageability:
+  type: "composite"
+  composite_weights: "learned_from_human_ratings"
+  variables:
+
+    - id: "lmk_immediate"
+      lynch_element: "landmark"
+      description: "Landmarks within the immediate streetscape, weighted by physical salience."
+      proxy: "Count of landmarks <=200m weighted by height / footprint / type"
+      source: ["OSM", "Wikidata (geometry only)"]
+      spatial_scale: "point"
+      radius_m: 200
+      weighting: "physical_salience"      # height, footprint, type — NOT fame
+      role: "predictor_subcomponent"
+      notes: "Fame deliberately excluded; see lmk_fame in cultural_visibility."
+
+    - id: "lmk_panoramic"
+      lynch_element: "landmark"
+      description: "Tall objects that can dominate a skyline from afar."
+      proxy: "Tall features <=1.5km, weighted by height/distance heuristic"
+      source: ["OSM"]
+      spatial_scale: "point"
+      radius_m: 1500
+      weighting: "height_over_distance"
+      ideal_method: "true viewshed on a Digital Surface Model (occlusion-aware)"
+      role: "predictor_subcomponent"
+
+    - id: "node_intersection"
+      lynch_element: "node"
+      description: "Complexity of major intersections (where paths converge)."
+      proxy: "Degree / complexity of major junctions in the street graph"
+      source: ["OSM"]
+      spatial_scale: ["point", "neighbourhood"]
+      role: "predictor_subcomponent"
+
+    - id: "node_plaza_transit"
+      lynch_element: "node"
+      description: "Squares, pedestrian areas, transit hubs, roundabouts."
+      proxy: "Presence/density of place=square, pedestrian areas, stations, roundabouts"
+      source: ["OSM"]
+      spatial_scale: "point"
+      role: "predictor_subcomponent"
+
+    - id: "path_entropy"
+      lynch_element: "path"
+      description: "Street-network orientation entropy (grid vs organic)."
+      proxy: "Orientation entropy (OSMnx)"
+      source: ["OSM"]
+      spatial_scale: "neighbourhood"
+      role: "predictor_subcomponent"
+      sign: "left_to_analysis"   # do NOT assume grid = more imageable
+      notes: "Both extreme grid (Manhattan) and extreme distinctiveness (Venice canals) are highly imageable."
+
+    - id: "path_distinctive"
+      lynch_element: "path"
+      description: "Distinctive path types (canals, grand boulevards, hill stairways)."
+      proxy: "Presence of distinctive path typologies"
+      source: ["OSM"]
+      spatial_scale: ["point", "neighbourhood"]
+      role: "predictor_subcomponent"
+
+    - id: "edge_water"
+      lynch_element: "edge"
+      description: "Proximity to coast / water — the strongest Lynchian edges."
+      proxy: "Distance to coast/lake/river"
+      source: ["OSM"]
+      spatial_scale: "point"
+      threshold_m: 300
+      role: "predictor_subcomponent"
+
+    - id: "edge_topo"
+      lynch_element: "edge"
+      description: "Strength of topographic edge (ridge, steep slope)."
+      proxy: "Slope / ridge strength"
+      source: ["DEM/SRTM"]
+      spatial_scale: "point"
+      role: "predictor_subcomponent"
+
+    - id: "edge_infra"
+      lynch_element: "edge"
+      description: "Linear infrastructural barriers (rail, walls)."
+      proxy: "Proximity to linear barriers"
+      source: ["OSM"]
+      spatial_scale: "point"
+      role: "predictor_subcomponent"
+
+    - id: "district_homogeneity"
+      lynch_element: "district"
+      description: "Homogeneity of land use / building typology (weak structural proxy)."
+      proxy: "Land-use / typology homogeneity in the surroundings"
+      source: ["OSM land use", "image-based homogeneity"]
+      spatial_scale: "neighbourhood"
+      role: "predictor_subcomponent"
+      notes: "Hardest element to measure from a single point; be explicit about this in the paper. Overlaps with the chosen neighbourhood definition."
+
+    - id: "img_clutter"
+      lynch_element: "scene"
+      description: "Visual complexity / clutter."
+      proxy: "Edge density / visual entropy computed on the panorama"
+      source: ["panorama"]
+      spatial_scale: "point"
+      role: "predictor_subcomponent"
+
+    - id: "img_skyview_green"
+      lynch_element: "scene"
+      description: "Sky openness and greenery (Treepedia / Place Pulse tradition)."
+      proxy: "Sky-view factor + vegetation index"
+      source: ["panorama"]
+      spatial_scale: "point"
+      role: "predictor_subcomponent"
+      notes: "Panorama is the native/ideal format for these measures."
+
+    - id: "img_atypicality"
+      lynch_element: "scene"
+      description: "Distinctiveness as atypicality: distance from the streetscape centroid."
+      proxy: "Distance from streetscape centroid in a frozen non-VLM encoder embedding"
+      source: ["frozen encoder, e.g. DINO"]
+      spatial_scale: "point"
+      computed_on: "standardised rectilinear crops (NOT the equirectangular panorama)"
+      role: "predictor_subcomponent"
+      constraint: "encoder_non_circularity"
+
+    - id: "human_distinctiveness"
+      lynch_element: "validation"
+      description: "Human rating of scene distinctiveness/recognisability on a subset."
+      proxy: "Human ratings (subset)"
+      source: ["human raters"]
+      spatial_scale: ["point", "neighbourhood"]
+      role: "validation_and_supervision"
+      uses:
+        - "validate the structural proxies"
+        - "learn the composite weights (regress human rating on sub-components)"
+
+    - id: "text_cue_present"
+      lynch_element: "confound"
+      description: "Presence of readable geo-informative text (OCR cue)."
+      proxy: "OCR detection of signage / plates / driving side"
+      source: ["image OCR"]
+      spatial_scale: "point"
+      role: "confound"
+      handling: "recorded separately; NEVER part of imageability"
+
+# -----------------------------------------------------------------------------
+# CONSTRUCT 2 — CULTURAL VISIBILITY (prominence in collective & digital memory)
+# Proxy for presence in the training corpus. NO composite: dimensions kept as
+# separate, competing predictors (the goal is to learn WHICH dimension predicts
+# recognition). Computed at city / neighbourhood / landmark level per variable.
+# -----------------------------------------------------------------------------
+cultural_visibility:
+  type: "separate_predictors"   # deliberately NOT a composite
+  no_composite_rationale: >
+    No human supervisory signal exists for 'cultural visibility' as there is
+    for distinctiveness, and the research question is precisely WHICH dimension
+    (global reach / visual footprint / landmark fame) drives recognition.
+    Collapsing them would destroy that answer.
+  variables:
+
+    - id: "prom_global_sitelinks"
+      dimension: "encyclopaedic"
+      description: "Global reach via number of Wikipedia language editions."
+      proxy: "Count of language editions / Wikidata sitelinks"
+      source: ["Wikidata"]
+      spatial_scale: ["city", "neighbourhood"]
+      role: "predictor"
+
+    - id: "prom_en_pageviews"
+      dimension: "encyclopaedic"
+      description: "Presence in the dominant (English) training subset."
+      proxy: "English Wikipedia pageviews"
+      source: ["Wikipedia API"]
+      spatial_scale: ["city", "neighbourhood"]
+      role: "predictor"
+      temporal: "snapshot in model training window"
+
+    - id: "prom_local_pageviews"
+      dimension: "encyclopaedic"
+      description: "Domestic prominence."
+      proxy: "Pageviews in the local-language edition"
+      source: ["Wikipedia API"]
+      spatial_scale: ["city", "neighbourhood"]
+      role: "predictor"
+      temporal: "snapshot in model training window"
+
+    - id: "prom_global_local_ratio"
+      dimension: "encyclopaedic"
+      description: "Derived global/local prominence ratio — candidate driver of regional bias."
+      proxy: "Derived from the prominence variables above"
+      source: ["derived"]
+      spatial_scale: ["city", "neighbourhood"]
+      role: "predictor"
+
+    - id: "vis_photo_density"
+      dimension: "visual_footprint"
+      description: "How heavily photographed a place is."
+      proxy: "Density of geotagged photos"
+      source: ["Mapillary", "Wikimedia Commons"]
+      spatial_scale: ["city", "neighbourhood"]
+      role: "predictor"
+      notes: "Sparse at neighbourhood level (many zeros, noisier)."
+
+    - id: "vis_training_count"
+      dimension: "visual_footprint"
+      description: "Most direct proxy for training presence."
+      proxy: "Caption counts in Re-LAION via locally hosted index"
+      source: ["Re-LAION-5B (local index)"]
+      spatial_scale: ["city", "landmark"]
+      role: "predictor"
+      cost: "high"
+      validity: "valid proxy for open-weight models; indirect for closed models (not trained on LAION)"
+      availability_note: >
+        Public knn.laion.ai API offline since 2023-12-19 and not restored;
+        Re-LAION-5B (cleaned) released 2024-08-30. Index must be downloaded and
+        hosted locally rather than queried via a public API.
+
+    - id: "lmk_fame"
+      dimension: "landmark_fame"
+      description: "The 'fame' half of the landmark, split off from imageability."
+      proxy: "Sitelinks / pageviews of landmarks near the point"
+      source: ["Wikidata", "Wikipedia API"]
+      spatial_scale: "point"
+      role: "predictor"
+      pairs_with: "lmk_immediate"   # same objects, physical vs fame property
+
+    - id: "tourism_arrivals"
+      dimension: "tourism"
+      description: "International tourist prominence (borderline confound)."
+      proxy: "International arrivals"
+      source: ["official statistics"]
+      spatial_scale: "city"
+      role: "predictor_borderline"
+
+# -----------------------------------------------------------------------------
+# CONFOUNDS — controls, not predictors of interest
+# -----------------------------------------------------------------------------
+confounds:
+  - id: "conf_gdp"
+    description: "Urban economic prominence; correlates with everything."
+    proxy: "GDP / urban economy"
+    source: ["World Bank", "national sources"]
+    spatial_scale: "city"
+    role: "control"
+
+  - id: "conf_sv_coverage"
+    description: "Street View coverage — sampling constraint AND likely correlated with training presence."
+    proxy: "SV coverage availability/density"
+    source: ["Street View API preliminary check"]
+    spatial_scale: "city"
+    role: "control_and_sampling_constraint"
+
+# -----------------------------------------------------------------------------
+# KEYS — identity / disambiguation
+# -----------------------------------------------------------------------------
+keys:
+  - id: "entity_qid"
+    description: "Wikidata QID resolving toponym ambiguity (e.g. Cambridge UK vs MA)."
+    source: ["Wikidata"]
+    spatial_scale: ["city", "neighbourhood"]
+    role: "key"
+    notes: "Encyclopaedic proxies resolve cleanly via QID; free-text counts (Re-LAION, search) need explicit disambiguation."
+
+# -----------------------------------------------------------------------------
+# ANALYSIS HOOKS — how these variables feed the central hypothesis
+# -----------------------------------------------------------------------------
+analysis:
+  central_model: >
+    recognition_accuracy ~ imageability_composite + cultural_visibility_predictors
+    + region + controls, WITH an interaction term between physical imageability
+    and cultural visibility.
+  accuracy_metrics:
+    city_task: ["geodesic distance error", "accuracy@{25,200,750}km", "country/region accuracy"]
+    neighbourhood_task: ["correct-boundary match"]
+  qualitative:
+    cue_coding: "model-cited cues mapped onto Lynch categories (landmark/district/node/edge/path)"
+
+# -----------------------------------------------------------------------------
+# OPEN DECISIONS — still to close before the DB schema is frozen
+# -----------------------------------------------------------------------------
+open_decisions: []   # none — presentation scheme resolved v0.3.7 (see capture)
+
+pending_verifications: []   # SV coverage for cairo/accra resolved (see resolved_decisions)
+
+resolved_decisions:   # closed in this version
+  - "City list: 50 cities, region-balanced (8 cells of 6 + 2 wildcards), seeded in cities_seed.csv"
+  - "Spatial frame: GHSL Urban Centre extent (see spatial_frame)"
+  - "Point-sampling scheme: stratified random, fixed N=200/city, two-stage (see sampling)"
+  - "Neighbourhood boundary source: official open-data with OSM fallback (see neighbourhood)"
+  - "Fabric-strata derivation operationalised (v0.3.0): two-axis rule (innerness x OSM land-use function) with within-city quantile thresholds; DEFAULT thresholds, to calibrate on a pilot"
+  - "Street View coverage verified (v0.3.1) via free metadata endpoint: accra KEPT (56% official); cairo DROPPED (~1% official, Egypt has ~no official car coverage) and SUBSTITUTED by Tunis; Alexandria rejected (~0%, same Egypt gap)"
+  - "Street View coverage (v0.3.2): casablanca DROPPED (0% official, Morocco has ~no official coverage) and SUBSTITUTED by Muscat (Oman, 23% official) keeping the MENA ordinary_baseline role. Probe (2026-07) confirmed a region-wide Gulf/N-Africa gap: Saudi Arabia (Riyadh, Jeddah), Kuwait, Bahrain, Iraq all ~0% official; only Oman (Muscat 23%), Lebanon (Beirut 10%) and Israel (Tel Aviv 50%) covered. This coverage gap is region-correlated -> a documented limitation feeding RQ5 and conf_sv_coverage."
+  - "Stage-A re-run at full spec (v0.3.3): initial run had innerness = centrality only and stats in logs only; all 50 cities re-sampled with innerness = mean(centrality_norm, density_norm) using GHS-BUILT-S E2020 R2023A 100m (density_norm = within-city quantile rank, as defined), and per-stratum candidate/rejection/shortfall counts persisted in sampling_runs.params_json (rejection_rate_is_confound). 9,842 points; 9 cities below 200, all coverage/heritage-limited (worst: dhaka 143, lagos 165)."
+  - "Neighbourhood boundaries loaded (v0.3.4): OSM admin polygons, per-city admin level chosen by count-in-band + centre/coverage rule (neighbourhood_source = osm_admin_level_N). 48/50 cities, 2,167 neighbourhoods; valparaiso and kuala_lumpur EXCLUDED from the neighbourhood task (no usable OSM partition: max 5 comunas / no Federal Territory subdivisions) — city task unaffected, official open-data route open."
+  - "Stage-B budget cap (v0.3.4): neighbourhood task tests 12 seeded-random neighbourhoods per city (~576 total) topped up to the 20-image floor (~+9k images ~ stage A), instead of all 2,167 (~+35k). Non-selected neighbourhoods keep organic stage-A points for robustness."
+  - "Stage-B sampling COMPLETE (v0.3.5): 7,724 stage-B points across 48 cities; 545/571 selected neighbourhoods reached the 20-image floor and are eligible (min 20, max 152 points). Shortfalls concentrate in SV-uncovered fringe districts (amman 7/12 — Zarqa/Salt/Mafraq uncovered; tunis 9/12) and micro-localities that self-excluded (harbour rocks in sydney, Waiheke in auckland) — the floor doing its job. Total dataset: 17,566 snap-verified points."
+  - "Image source DECIDED (v0.3.6): Google Street View, with permission for research use being secured institutionally via the supervisor (Middlesex). Legal context on file: Google ToS prohibits storing imagery (pano_id exempt — all stored identifiers compliant) and using content to 'train, test, validate' ML models; UK CDPA s.29A TDM exception (non-commercial research, contract-override unenforcemable) is the statutory backstop. Mapillary full-switch REJECTED on evidence (mapillary_report.csv 2026-07): median 360-pano coverage ~4% across the 50 cities (only 6 cities >20%), median any-image ~43% with failures concentrated regionally (seoul 7%, kolkata 8%) — cannot serve the panorama-based design and would distort RQ5. Mapillary retained as a robustness subset in its ~6 pano-covered cities. NO bulk imagery fetch until the permission is confirmed in writing."
+  - "Presentation scheme DECIDED (v0.3.7): 4 rectilinear cardinal views per panorama (N/E/S/W, fov 90, 640x640) fetched from the Static API (which reprojects server-side — the local equirect-stitching plan is superseded), presented to each VLM as a single multi-image prompt (one response per point). Single-view and per-view-scored variants kept as ablations. Zenith view deferred as a capture-only add-on for img_skyview_green."
+  - "Text blurring DECIDED (v0.3.8, supervisor requirement): all model-facing stimuli are text-blurred copies (automatic scene-text detection + Gaussian blur; scheme cardinal4_blurred_v1); originals stay archived. Unblurred ablation on 20 seeded-random stage-A points per city (1,000 points) quantifies OCR reliance. Detector output doubles as the text_cue_present confound measurement. Detector recall to be validated on a manual sample and reported."
