@@ -1,0 +1,51 @@
+city_id,ucdb_id,ucdb_name,ucdb_country,method,distance_m
+accra,3175,Accra,Ghana,within,0.0
+adelaide,1029,Adelaide,Australia,within,0.0
+ahmedabad,6143,Ahmedabad,India,within,0.0
+amman,992,Amman,Jordan,within,0.0
+auckland,1147,Auckland,New Zealand,within,0.0
+bangkok,2315,Bangkok,Thailand,within,0.0
+bengaluru,9558,Bengaluru,India,within,0.0
+berlin,5483,Berlin,Germany,within,0.0
+brisbane,2734,Brisbane,Australia,within,0.0
+buenos_aires,4443,Buenos Aires,Argentina,within,0.0
+cape_town,431,Cape Town,South Africa,within,0.0
+chicago,7532,Chicago,United States,within,0.0
+colombo,632,Colombo [Sri Jayawardenepura Kotte],Sri Lanka,within,0.0
+dakar,39,Dakar,Senegal,within,0.0
+delhi,7963,New Delhi,India,within,0.0
+dhaka,6090,Dhaka,Bangladesh,within,0.0
+doha,153,Doha,Qatar,within,0.0
+dubai,1007,Dubai,United Arab Emirates,within,0.0
+houston,6167,Houston,United States,within,0.0
+istanbul,2637,Istanbul,Turkey,within,0.0
+jakarta,5472,Jakarta,Indonesia,within,0.0
+johannesburg,3512,Johannesburg,South Africa,within,0.0
+kolkata,11352,Kolkata,India,within,0.0
+kuala_lumpur,1648,Kuala Lumpur,Malaysia,within,0.0
+lagos,1289,Lagos,Nigeria,within,0.0
+lima,2171,Lima,Peru,within,0.0
+london,5816,London,United Kingdom,within,0.0
+los_angeles,2007,Los Angeles,United States,within,0.0
+lyon,3978,Lyon,France,within,0.0
+medellin,2676,Medellín,Colombia,within,0.0
+melbourne,1747,Melbourne,Australia,within,0.0
+mexico_city,5402,Mexico City,MÃ©xico,within,0.0
+mumbai,7599,Mumbai,India,within,0.0
+muscat,1124,Muscat,Oman,nearest,15420.2
+nairobi,1717,Nairobi,Kenya,within,0.0
+new_york,8099,New York City,United States,within,0.0
+paris,2878,Paris,France,within,0.0
+perth,498,Perth,Australia,within,0.0
+phoenix,4699,Phoenix,United States,within,0.0
+rio_de_janeiro,7799,Rio de Janeiro,Brazil,within,0.0
+rome,3938,Rome,Italy,within,0.0
+sao_paulo,7277,São Paulo,Brazil,within,0.0
+seoul,348,Seoul,South Korea,within,0.0
+singapore,178,Singapore,Singapore,within,0.0
+sydney,2324,Sydney,Australia,within,0.0
+tokyo,5929,Tokyo,Japan,within,0.0
+toronto,2869,Toronto,Canada,within,0.0
+tunis,1399,Tunis,Tunisia,within,0.0
+valparaiso,1162,Valparaíso,Chile,within,0.0
+warsaw,3712,Warsaw,Poland,within,0.0

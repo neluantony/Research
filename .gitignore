@@ -1,0 +1,27 @@
+# --- large data: never pushed (17+ GB of extracts, rasters, imagery) --------
+data/
+GHS_UCDB_GLOBE_R2024A_V1_2/
+*.zip
+*.pbf
+*.tif
+*.gpkg
+*.exe
+
+# Street View imagery must stay local: the research permission covers storage
+# for this project, NOT redistribution on a public repository.
+
+# --- local environment -------------------------------------------------------
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# --- generated documents & result pages (kept local, like the PDFs) --------
+*.pdf
+docs/
+pilot_results_*.html
+replication_*.html
+
+# --- raw model output & Colab bundle (regenerable; canonical copy is the DB)
+colab/bundle_city_grid/
+responses_*.jsonl

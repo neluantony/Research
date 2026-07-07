@@ -1,0 +1,50 @@
+city_id,city_name,country,proposed_qid,candidate_label,candidate_description,confident,note
+new_york,New York,United States,Q60,New York City,most populous city in the United States,True,top settlement by sitelinks (322 vs next 186); country match
+los_angeles,Los Angeles,United States,Q65,Los Angeles,"seat of Los Angeles County, and largest city in California, United States",True,top settlement by sitelinks (277 vs next 0); country match
+chicago,Chicago,United States,Q1297,Chicago,"city and county seat of Cook County, and largest city in State of Illinois, United States of America",True,top settlement by sitelinks (277 vs next 0); country match
+toronto,Toronto,Canada,Q172,Toronto,"capital and largest city of the province of Ontario, Canada",True,top settlement by sitelinks (222 vs next 30); country match
+houston,Houston,United States,Q16555,Houston,"seat of Harris County, and largest city in State of Texas, United States",True,top settlement by sitelinks (191 vs next 39); country match
+phoenix,Phoenix,United States,Q16556,Phoenix,capital city of the U.S. state of Arizona and seat of Maricopa County,True,top settlement by sitelinks (179 vs next 0); country match
+mexico_city,Mexico City,Mexico,Q1489,Mexico City,capital and largest city of Mexico,True,top settlement by sitelinks (255 vs next 0); country match
+rio_de_janeiro,Rio de Janeiro,Brazil,Q8678,Rio de Janeiro,"city of Rio de Janeiro state, Brazil",True,top settlement by sitelinks (301 vs next 0); country match
+buenos_aires,Buenos Aires,Argentina,Q1486,Buenos Aires,capital and largest city of Argentina,True,top settlement by sitelinks (274 vs next 0); country match
+sao_paulo,Sao Paulo,Brazil,Q174,São Paulo,"largest city of Brazil, and capital of the State of São Paulo",True,top settlement by sitelinks (253 vs next 0); country match
+lima,Lima,Peru,Q2868,Lima,capital and largest city of Peru,True,top settlement by sitelinks (219 vs next 0); country match
+medellin,Medellin,Colombia,Q48278,Medellín,"capital city of Antioquia, Colombia",True,top settlement by sitelinks (150 vs next 1); country match
+valparaiso,Valparaiso,Chile,Q33986,Valparaíso,city in Chile,True,top settlement by sitelinks (240 vs next 2); country match
+paris,Paris,France,Q90,Paris,capital and most populous city in France,True,top settlement by sitelinks (361 vs next 0); country match
+london,London,United Kingdom,Q84,London,capital and largest city of England and the United Kingdom,True,top settlement by sitelinks (353 vs next 89); country unconfirmed
+rome,Rome,Italy,Q220,Rome,capital and largest city of Italy,True,top settlement by sitelinks (339 vs next 0); country match
+berlin,Berlin,Germany,Q64,Berlin,"federated state, capital and largest city of Germany",True,top settlement by sitelinks (332 vs next 33); country unconfirmed
+warsaw,Warsaw,Poland,Q270,Warsaw,capital and largest city of Poland,True,top settlement by sitelinks (287 vs next 0); country match
+lyon,Lyon,France,Q456,Lyon,city of France,True,top settlement by sitelinks (195 vs next 46); country match
+istanbul,Istanbul,Turkey,Q406,Istanbul,largest city in Turkey,True,top settlement by sitelinks (285 vs next 0); country match
+dubai,Dubai,United Arab Emirates,Q612,Dubai,most populous city in the United Arab Emirates and the capital of the Emirate of Dubai,True,top settlement by sitelinks (218 vs next 0); country match
+muscat,Muscat,Oman,Q3826,Muscat,capital of Oman,True,top settlement by sitelinks (158 vs next 2); country match
+amman,Amman,Jordan,Q3805,Amman,capital of Jordan,True,top settlement by sitelinks (193 vs next 0); country match
+doha,Doha,Qatar,Q3861,Doha,capital of Qatar,True,top settlement by sitelinks (186 vs next 24); country match
+cape_town,Cape Town,South Africa,Q5465,Cape Town,"city in the Western Cape, South Africa",True,top settlement by sitelinks (217 vs next 19); country match
+johannesburg,Johannesburg,South Africa,Q34647,Johannesburg,largest city in South Africa,True,top settlement by sitelinks (187 vs next 60); country match
+nairobi,Nairobi,Kenya,Q3870,Nairobi,capital city of Kenya,True,top settlement by sitelinks (235 vs next 0); country match
+lagos,Lagos,Nigeria,Q8673,Lagos,largest city and former capital of Nigeria,True,top settlement by sitelinks (190 vs next 0); country match
+accra,Accra,Ghana,Q3761,Accra,capital city of Ghana,True,top settlement by sitelinks (197 vs next 0); country match
+dakar,Dakar,Senegal,Q3718,Dakar,capital and the largest city of Senegal,True,top settlement by sitelinks (177 vs next 5); country match
+mumbai,Mumbai,India,Q1156,Mumbai,"capital city in Maharashtra, India",True,top settlement by sitelinks (225 vs next 0); country match
+delhi,Delhi,India,Q1353,Delhi,megacity and union territory of India,True,top settlement by sitelinks (201 vs next 0); country match
+kolkata,Kolkata,India,Q1348,Kolkata,"capital city of West Bengal, India",True,top settlement by sitelinks (200 vs next 0); country match
+bengaluru,Bengaluru,India,Q1355,Bengaluru,capital city of Karnataka state in India,True,top settlement by sitelinks (161 vs next 0); country match
+dhaka,Dhaka,Bangladesh,Q1354,Dhaka,capital and largest city of Bangladesh,True,top settlement by sitelinks (219 vs next 0); country match
+colombo,Colombo,Sri Lanka,Q35381,Colombo,largest city and de facto capital of Sri Lanka,True,top settlement by sitelinks (151 vs next 0); country match
+ahmedabad,Ahmedabad,India,Q1070,Ahmedabad,"city in the state of Gujarat, India",True,top settlement by sitelinks (143 vs next 0); country match
+tokyo,Tokyo,Japan,Q1490,Tokyo,capital and largest city of Japan,True,top settlement by sitelinks (298 vs next 42); country match
+seoul,Seoul,South Korea,Q8684,Seoul,capital and largest city of South Korea,True,top settlement by sitelinks (252 vs next 0); country match
+singapore,Singapore,Singapore,Q334,Singapore,sovereign island country and city-state in maritime Southeast Asia,True,top settlement by sitelinks (328 vs next 13); country unconfirmed
+bangkok,Bangkok,Thailand,Q1861,Bangkok,capital of Thailand,True,top settlement by sitelinks (260 vs next 0); country match
+jakarta,Jakarta,Indonesia,Q3630,Jakarta,capital and largest city of Indonesia,True,top settlement by sitelinks (248 vs next 32); country match
+kuala_lumpur,Kuala Lumpur,Malaysia,Q1865,Kuala Lumpur,federal territory and capital city of Malaysia,True,top settlement by sitelinks (213 vs next 1); country match
+sydney,Sydney,Australia,Q3130,Sydney,"capital city of New South Wales, Australia",True,top settlement by sitelinks (260 vs next 0); country match
+melbourne,Melbourne,Australia,Q3141,Melbourne,"capital city of Victoria, Australia",True,top settlement by sitelinks (206 vs next 12); country match
+brisbane,Brisbane,Australia,Q34932,Brisbane,"capital city of Queensland, Australia",True,top settlement by sitelinks (165 vs next 0); country match
+perth,Perth,Australia,Q3183,Perth,"capital city of Western Australia, Australia",True,top settlement by sitelinks (171 vs next 14); country match
+adelaide,Adelaide,Australia,Q5112,Adelaide,capital city of South Australia,True,top settlement by sitelinks (159 vs next 0); country match
+auckland,Auckland,New Zealand,Q37100,Auckland,"city on the North Island, New Zealand",True,top settlement by sitelinks (160 vs next 0); country match

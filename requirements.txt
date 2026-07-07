@@ -1,0 +1,17 @@
+# Ingestion pipeline dependencies (Python 3.10+)
+PyYAML>=6.0          # parse codebook.yaml (the source of truth)
+psycopg[binary]>=3.1 # PostgreSQL driver
+# Wikidata QID/coordinate resolution uses only the standard library (urllib).
+geopandas>=1.0       # load-frames only: read GHS-UCDB, reproject, point-in-polygon
+# Fabric-strata step only (.osm.pbf is read via geopandas + GDAL's OSM driver,
+# already provided by geopandas/pyogrio — no extra OSM library needed):
+rasterio>=1.3        #   sample the GHS-BUILT-S built-up density raster per point
+
+# Inference phase only (python -m inference): VLM providers under test
+anthropic>=0.92      # Claude models (Messages API, structured outputs)
+
+# Text blurring (blur-views): scene-text detection on the fetched views
+easyocr>=1.7         # CRAFT detector (used detection-only, any script)
+
+# Test-only (not needed to run the pipeline): unit tests under tests/
+pytest>=8.0          # run with: .venv\Scripts\python.exe -m pytest -q
