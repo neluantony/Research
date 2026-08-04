@@ -139,8 +139,8 @@ def cmd_coverage(args) -> int:
                          rep["coverage_ok"], rep["coverage_official"], flag))
     if rows:
         import csv
-        from .paths import REPO_ROOT
-        with open(REPO_ROOT / "coverage_report.csv", "w", encoding="utf-8", newline="") as fh:
+        from .paths import results_table
+        with open(results_table("coverage_report.csv"), "w", encoding="utf-8", newline="") as fh:
             w = csv.writer(fh)
             w.writerow(["city_id", "n", "ok", "official", "coverage_ok", "coverage_official", "flag"])
             w.writerows(rows)
@@ -481,7 +481,7 @@ def cmd_mapillary_coverage(args) -> int:
     import csv
 
     from . import mapillary
-    from .paths import REPO_ROOT
+    from .paths import results_table
 
     token = mapillary.api_token()   # fail fast if the env var is missing
     rows = []
@@ -499,7 +499,7 @@ def cmd_mapillary_coverage(args) -> int:
                   flush=True)
             rows.append(rep)
     if rows:
-        with open(REPO_ROOT / "mapillary_report.csv", "w", encoding="utf-8", newline="") as fh:
+        with open(results_table("mapillary_report.csv"), "w", encoding="utf-8", newline="") as fh:
             w = csv.DictWriter(fh, fieldnames=list(rows[0].keys()))
             w.writeheader()
             w.writerows(rows)

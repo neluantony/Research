@@ -1,5 +1,23 @@
-# --- large data: never pushed (17+ GB of extracts, rasters, imagery) --------
-data/
+# =====================================================================
+# Repository layout: src/ (code+config), data/ (raw+processed inputs),
+# results/ (figures/tables/logs), models/ (weights), docs/, weekly_meetings/
+# =====================================================================
+
+# --- data/: heavy inputs stay local (17+ GB imagery, rasters, extracts) -----
+# Ignore everything under data/ EXCEPT the tracked raw seed and folder keepers.
+data/*
+!data/raw/
+!data/processed/
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/cities_seed.csv
+data/processed/*
+!data/processed/.gitkeep
+
+# Street View imagery must stay local: the research permission covers storage
+# for this project, NOT redistribution on a public repository.
+
+# --- other large / binary artefacts (anywhere) ------------------------------
 GHS_UCDB_GLOBE_R2024A_V1_2/
 *.zip
 *.pbf
@@ -7,21 +25,30 @@ GHS_UCDB_GLOBE_R2024A_V1_2/
 *.gpkg
 *.exe
 
-# Street View imagery must stay local: the research permission covers storage
-# for this project, NOT redistribution on a public repository.
+# --- model weights: large binaries never pushed (keep models/README.md) -----
+models/*
+!models/README.md
 
-# --- local environment -------------------------------------------------------
+# --- local environment ------------------------------------------------------
 .venv/
 __pycache__/
 *.pyc
 .pytest_cache/
+*.egg-info/
 
-# --- generated documents & result pages (kept local, like the PDFs) --------
+# --- generated documents & result pages -------------------------------------
+# Reports/papers (.md, .pdf) in docs/ ARE tracked; local HTML working copies
+# and the ad-hoc one-pagers are not.
 *.pdf
-docs/
+!docs/feasibility_study_2026-07.pdf
+!weekly_meetings/*.pdf
+docs/*.html
 pilot_results_*.html
 replication_*.html
 
-# --- raw model output & Colab bundle (regenerable; canonical copy is the DB)
-colab/bundle_city_grid/
+# --- raw model output & Colab bundle (regenerable; canonical copy is the DB) -
+src/colab/bundle_city_grid/
 responses_*.jsonl
+
+# --- local-only recovery scratch (professor already restored these upstream) -
+recovered_from_professor/

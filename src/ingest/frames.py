@@ -14,7 +14,7 @@ from pathlib import Path
 
 import psycopg
 
-from .paths import REPO_ROOT
+from .paths import results_table
 from .wikidata import get_coordinates
 
 # GHS-UCDB attribute columns. Defaults match R2019A; override via env if your
@@ -52,7 +52,7 @@ def fetch_coords(conn: psycopg.Connection, write: bool) -> list[tuple]:
                         lonlat[0] if lonlat else None,
                         lonlat[1] if lonlat else None))
 
-    _write_report(REPO_ROOT / "coords_report.csv",
+    _write_report(results_table("coords_report.csv"),
                   ["city_id", "entity_qid", "lon", "lat"], results)
 
     if write:
@@ -188,7 +188,7 @@ def load_frames(conn: psycopg.Connection, ucdb_path: Path, write: bool,
             updates.append((poly.wkt, city["city_id"]))
 
     _write_report(
-        REPO_ROOT / "frames_report.csv",
+        results_table("frames_report.csv"),
         ["city_id", "ucdb_id", "ucdb_name", "ucdb_country", "method", "distance_m"],
         [tuple(r.values()) for r in reports],
     )

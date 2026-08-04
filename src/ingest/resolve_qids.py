@@ -17,7 +17,7 @@ from dataclasses import dataclass
 
 import psycopg
 
-from .paths import CITIES_SEED, REPO_ROOT
+from .paths import CITIES_SEED, results_table
 from .load_seed import _read_seed
 
 API = "https://www.wikidata.org/w/api.php"
@@ -228,7 +228,7 @@ def resolve_all(conn: psycopg.Connection | None, write: bool) -> list[Proposal]:
             continue  # already resolved in the seed
         proposals.append(resolve_city(row))
 
-    out_path = REPO_ROOT / "qid_proposals.csv"
+    out_path = results_table("qid_proposals.csv")
     with open(out_path, "w", encoding="utf-8", newline="") as fh:
         w = csv.writer(fh)
         w.writerow(["city_id", "city_name", "country", "proposed_qid",

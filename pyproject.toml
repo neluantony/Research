@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "urban-imageability"
+version = "0.3.8"
+description = "Urban imageability & geographic knowledge in vision-language models"
+requires-python = ">=3.10"
+
+# The code lives under src/ (see README structure). This src-layout keeps the
+# packages importable as `ingest` / `inference` after `pip install -e .`, and
+# pytest picks them up via the pythonpath setting below without an install.
+# Runtime dependencies are listed in requirements.txt.
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["ingest*", "inference*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

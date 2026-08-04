@@ -44,7 +44,8 @@ def test_region_map_values_are_valid_regions():
 
 def test_all_seed_countries_are_mapped():
     import csv
-    with open("cities_seed.csv", encoding="utf-8") as fh:
+    from ingest.paths import CITIES_SEED
+    with open(CITIES_SEED, encoding="utf-8") as fh:
         rows = list(csv.DictReader(fh))
     for r in rows:
         assert region_for_country(r["country"]) == r["region"], r["country"]
